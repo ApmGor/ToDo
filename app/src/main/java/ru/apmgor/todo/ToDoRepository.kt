@@ -15,4 +15,12 @@ class ToDoRepository {
             notes = "Talk to some people at non-profit organizations to see what they need!"
         )
     )
+
+    fun save(model: ToDoModel) {
+        items = if (items.any { model.id == it.id }) {
+            items.map { if (model.id == it.id) model else it }
+        } else {
+            items + model
+        }
+    }
 }

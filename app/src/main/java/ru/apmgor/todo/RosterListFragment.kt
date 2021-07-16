@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.apmgor.todo.databinding.TodoRosterBinding
 
@@ -24,7 +23,9 @@ class RosterListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter = RosterAdapter(layoutInflater)
+        val adapter = RosterAdapter(layoutInflater) {
+            motor.save(it.copy(isCompleted = !it.isCompleted))
+        }
 
         binding.items.apply {
             setAdapter(adapter)
