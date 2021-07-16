@@ -43,6 +43,7 @@ class RosterListFragment : Fragment() {
     }
 
     private fun display(model: ToDoModel) {
-        findNavController().navigate(RosterListFragmentDirections.displayModel())
+        findNavController()
+            .navigate(RosterListFragmentDirections.displayModel(model.id))
     }
 }
