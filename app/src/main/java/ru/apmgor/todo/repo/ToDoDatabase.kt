@@ -1,0 +1,19 @@
+package ru.apmgor.todo.repo
+
+import android.content.Context
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+
+@Database(entities = [ToDoEntity::class], version = 1)
+@TypeConverters(TypeTransmogrifier::class)
+abstract class ToDoDatabase : RoomDatabase() {
+    abstract fun todoStore(): ToDoEntity.Store
+
+    companion object {
+        private const val DB_NAME = "stuff.db"
+        fun newInstance(context: Context) =
+            Room.databaseBuilder(context, ToDoDatabase::class.java, DB_NAME).build()
+    }
+}
