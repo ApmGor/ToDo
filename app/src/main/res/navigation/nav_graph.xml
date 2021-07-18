@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/rosterListFragment"
-        android:name="ru.apmgor.todo.RosterListFragment"
+        android:name="ru.apmgor.todo.ui.roster.RosterListFragment"
         android:label="@string/app_name">
         <action
             android:id="@+id/displayModel"
@@ -22,7 +22,7 @@
     </fragment>
     <fragment
         android:id="@+id/displayFragment"
-        android:name="ru.apmgor.todo.DisplayFragment"
+        android:name="ru.apmgor.todo.ui.display.DisplayFragment"
         android:label="@string/app_name" >
         <argument
             android:name="modelId"
@@ -33,7 +33,7 @@
     </fragment>
     <fragment
         android:id="@+id/editFragment"
-        android:name="ru.apmgor.todo.EditFragment"
+        android:name="ru.apmgor.todo.ui.edit.EditFragment"
         android:label="@string/app_name" >
         <argument
             android:name="modelId"

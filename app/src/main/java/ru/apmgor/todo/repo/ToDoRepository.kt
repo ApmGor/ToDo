@@ -1,4 +1,4 @@
-package ru.apmgor.todo
+package ru.apmgor.todo.repo
 
 class ToDoRepository {
     var items = emptyList<ToDoModel>()

@@ -1,7 +1,8 @@
-package ru.apmgor.todo
+package ru.apmgor.todo.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import ru.apmgor.todo.R
 import ru.apmgor.todo.databinding.ActivityAboutBinding
 
 class AboutActivity : AppCompatActivity() {

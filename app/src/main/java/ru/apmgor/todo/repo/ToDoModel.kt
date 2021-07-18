@@ -1,4 +1,4 @@
-package ru.apmgor.todo
+package ru.apmgor.todo.repo
 
 import java.time.Instant
 import java.util.*

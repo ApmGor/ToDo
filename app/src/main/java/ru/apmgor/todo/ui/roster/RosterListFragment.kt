@@ -1,4 +1,4 @@
-package ru.apmgor.todo
+package ru.apmgor.todo.ui.roster
 
 import android.os.Bundle
 import android.view.*
@@ -7,7 +7,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import ru.apmgor.todo.R
 import ru.apmgor.todo.databinding.TodoRosterBinding
+import ru.apmgor.todo.repo.ToDoModel
 
 class RosterListFragment : Fragment() {
     private val motor: RosterMotor by viewModel()
