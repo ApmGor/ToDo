@@ -43,6 +43,7 @@ class EditFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.actions_edit, menu)
+        menu.findItem(R.id.delete).isVisible = args.modelId != null
 
         super.onCreateOptionsMenu(menu, inflater)
     }
@@ -51,6 +52,10 @@ class EditFragment : Fragment() {
         when(item.itemId) {
             R.id.save -> {
                 save()
+                true
+            }
+            R.id.delete -> {
+                delete()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -71,9 +76,21 @@ class EditFragment : Fragment() {
         navToDisplay()
     }
 
+    private fun delete() {
+        val model = motor.getModel()
+
+        model?.let { motor.delete(it) }
+        navToList()
+    }
+
     private fun navToDisplay() {
         hideKeyboard()
         findNavController().popBackStack()
+    }
+
+    private fun navToList() {
+        hideKeyboard()
+        findNavController().popBackStack(R.id.rosterListFragment, false)
     }
 
     private fun hideKeyboard() {
