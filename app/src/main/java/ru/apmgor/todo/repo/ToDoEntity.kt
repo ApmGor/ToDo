@@ -20,12 +20,30 @@ data class ToDoEntity(
         fun all(): Flow<List<ToDoEntity>>
 
         @Query("SELECT * FROM todos WHERE id = :modelId")
-        fun find(modelId: String?): Flow<ToDoEntity>
+        fun find(modelId: String?): Flow<ToDoEntity?>
 
         @Insert(onConflict = OnConflictStrategy.REPLACE)
         suspend fun save(vararg entities: ToDoEntity)
 
         @Delete
         suspend fun delete(vararg entities: ToDoEntity)
+    }
+
+    constructor(model: ToDoModel) : this(
+        id = model.id,
+        description = model.description,
+        isCompleted = model.isCompleted,
+        notes = model.notes,
+        createdOn = model.createdOn
+    )
+
+    fun toModel(): ToDoModel {
+        return ToDoModel(
+            id = id,
+            description = description,
+            isCompleted = isCompleted,
+            notes = notes,
+            createdOn = createdOn
+        )
     }
 }
