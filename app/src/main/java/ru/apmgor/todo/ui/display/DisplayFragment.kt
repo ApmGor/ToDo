@@ -33,18 +33,20 @@ class DisplayFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        motor.getModel()?.let {
-            binding.apply {
-                completed.visibility = if (it.isCompleted) View.VISIBLE else View.GONE
-                desc.text = it.description
-                createdOn.text = DateUtils.getRelativeDateTimeString(
-                    requireContext(),
-                    it.createdOn.toEpochMilli(),
-                    DateUtils.MINUTE_IN_MILLIS,
-                    DateUtils.WEEK_IN_MILLIS,
-                    0
-                )
-                notes.text = it.notes
+        motor.states.observe(viewLifecycleOwner) { state ->
+            state.item?.let {
+                binding.apply {
+                    completed.visibility = if (it.isCompleted) View.VISIBLE else View.GONE
+                    desc.text = it.description
+                    createdOn.text = DateUtils.getRelativeDateTimeString(
+                        requireContext(),
+                        it.createdOn.toEpochMilli(),
+                        DateUtils.MINUTE_IN_MILLIS,
+                        DateUtils.WEEK_IN_MILLIS,
+                        0
+                    )
+                    notes.text = it.notes
+                }
             }
         }
     }

@@ -8,7 +8,6 @@ import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
 import org.koin.core.qualifier.named
-import org.koin.core.scope.get
 import org.koin.dsl.module
 import ru.apmgor.todo.repo.ToDoDatabase
 import ru.apmgor.todo.repo.ToDoRepository

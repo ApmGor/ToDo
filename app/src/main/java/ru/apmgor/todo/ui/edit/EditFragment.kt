@@ -35,11 +35,15 @@ class EditFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        motor.getModel()?.let {
-            binding.apply {
-                isCompleted.isChecked = it.isCompleted
-                desc.setText(it.description)
-                notes.setText(it.notes)
+        motor.states.observe(viewLifecycleOwner) { state ->
+            if (savedInstanceState == null) {
+                state.item?.let {
+                    binding.apply {
+                        isCompleted.isChecked = it.isCompleted
+                        desc.setText(it.description)
+                        notes.setText(it.notes)
+                    }
+                }
             }
         }
     }
@@ -65,7 +69,7 @@ class EditFragment : Fragment() {
         }
 
     private fun save() {
-        val model = motor.getModel()
+        val model = motor.states.value?.item
         val edited = model?.copy(
             description = binding.desc.text.toString(),
             isCompleted = binding.isCompleted.isChecked,
@@ -80,7 +84,7 @@ class EditFragment : Fragment() {
     }
 
     private fun delete() {
-        val model = motor.getModel()
+        val model = motor.states.value?.item
 
         model?.let { motor.delete(it) }
         navToList()
