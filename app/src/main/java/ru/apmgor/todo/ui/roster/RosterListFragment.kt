@@ -46,6 +46,7 @@ class RosterListFragment : Fragment() {
 
         motor.states.observe(viewLifecycleOwner) { state ->
             adapter.submitList(state.items)
+            binding.loading.visibility = View.GONE
 
             when {
                 state.items.isEmpty() -> {
