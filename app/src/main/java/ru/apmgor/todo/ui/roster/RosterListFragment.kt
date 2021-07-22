@@ -2,6 +2,7 @@ package ru.apmgor.todo.ui.roster
 
 import android.os.Bundle
 import android.view.*
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -16,6 +17,10 @@ class RosterListFragment : Fragment() {
     private val motor: RosterMotor by viewModel()
     private lateinit var binding: TodoRosterBinding
     private val menuMap = mutableMapOf<FilterMode, MenuItem>()
+    private val createDoc =
+        registerForActivityResult(ActivityResultContracts.CreateDocument()) {
+
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,11 +110,19 @@ class RosterListFragment : Fragment() {
                 motor.load(FilterMode.OUTSTANDING)
                 true
             }
+            R.id.save -> {
+                saveReport()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
 
     private fun add() {
         findNavController()
             .navigate(RosterListFragmentDirections.createModel(null))
+    }
+
+    private fun saveReport() {
+        createDoc.launch("report.html")
     }
 }
