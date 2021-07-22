@@ -1,6 +1,9 @@
 package ru.apmgor.todo
 
 import android.app.Application
+import android.text.format.DateUtils
+import com.github.jknack.handlebars.Handlebars
+import com.github.jknack.handlebars.Helper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import org.koin.android.ext.koin.androidContext
@@ -13,6 +16,7 @@ import ru.apmgor.todo.repo.ToDoDatabase
 import ru.apmgor.todo.repo.ToDoRepository
 import ru.apmgor.todo.ui.SingleModelMotor
 import ru.apmgor.todo.ui.roster.RosterMotor
+import java.time.Instant
 
 class ToDoApp : Application() {
     private val koinModule = module {
@@ -22,6 +26,18 @@ class ToDoApp : Application() {
         ) }
         single { ToDoDatabase.newInstance(androidContext()) }
         single(named("appScope")) { CoroutineScope(SupervisorJob()) }
+        single {
+            Handlebars().apply {
+                registerHelper("dateFormat", Helper<Instant> { value, _ ->
+                    DateUtils.getRelativeDateTimeString(
+                        androidContext(),
+                        value.toEpochMilli(),
+                        DateUtils.MINUTE_IN_MILLIS,
+                        DateUtils.WEEK_IN_MILLIS, 0
+                    )
+                })
+            }
+        }
         viewModel { RosterMotor(get()) }
         viewModel { (modelId: String) -> SingleModelMotor(get(), modelId) }
     }
