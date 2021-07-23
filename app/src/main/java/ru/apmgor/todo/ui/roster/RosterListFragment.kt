@@ -36,7 +36,7 @@ class RosterListFragment : Fragment() {
         private const val TAG = "ToDo"
     }
 
-    class CreateDocumentHtml : ActivityResultContracts.CreateDocument() {
+    private class CreateDocumentHtml : ActivityResultContracts.CreateDocument() {
         override fun createIntent(context: Context, input: String): Intent {
             super.createIntent(context, input)
             return Intent().apply {
