@@ -1,12 +1,22 @@
 package ru.apmgor.todo.ui.roster
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.apmgor.todo.R
 import ru.apmgor.todo.databinding.TodoRosterBinding
@@ -18,9 +28,24 @@ class RosterListFragment : Fragment() {
     private lateinit var binding: TodoRosterBinding
     private val menuMap = mutableMapOf<FilterMode, MenuItem>()
     private val createDoc =
-        registerForActivityResult(ActivityResultContracts.CreateDocument()) {
-
+        registerForActivityResult(CreateDocumentHtml()) {
+            motor.saveReport(it)
         }
+
+    companion object {
+        private const val TAG = "ToDo"
+    }
+
+    class CreateDocumentHtml : ActivityResultContracts.CreateDocument() {
+        override fun createIntent(context: Context, input: String): Intent {
+            super.createIntent(context, input)
+            return Intent().apply {
+                action = Intent.ACTION_CREATE_DOCUMENT
+                type = "text/html"
+                putExtra(Intent.EXTRA_TITLE, input)
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +57,9 @@ class RosterListFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = TodoRosterBinding.inflate(inflater, container, false).apply { binding = this }.root
+    ) = TodoRosterBinding.inflate(inflater, container, false)
+        .apply { binding = this }
+        .root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -67,6 +94,17 @@ class RosterListFragment : Fragment() {
                 else -> binding.empty.visibility = View.GONE
             }
             menuMap[state.filterMode]?.isChecked = true
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            motor.navEvents.flowWithLifecycle(
+                viewLifecycleOwner.lifecycle,
+                Lifecycle.State.STARTED)
+                .collect { nav ->
+                    when (nav) {
+                        is Nav.ViewReport -> viewReport(nav.doc)
+                    }
+                }
         }
     }
 
@@ -123,6 +161,25 @@ class RosterListFragment : Fragment() {
     }
 
     private fun saveReport() {
-        createDoc.launch("report.html")
+        createDoc.launch("report")
+    }
+
+    private fun safeStartActivity(intent: Intent) {
+        try {
+            startActivity(intent)
+        } catch (t: Throwable) {
+            Log.e(TAG, "Exception starting $intent", t)
+            Toast.makeText(requireActivity(), R.string.oops, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun viewReport(uri: Uri) {
+        safeStartActivity(
+            Intent().apply {
+                action = Intent.ACTION_VIEW
+                data = uri
+                flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+            }
+        )
     }
 }

@@ -14,6 +14,7 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import ru.apmgor.todo.repo.ToDoDatabase
 import ru.apmgor.todo.repo.ToDoRepository
+import ru.apmgor.todo.report.RosterReport
 import ru.apmgor.todo.ui.SingleModelMotor
 import ru.apmgor.todo.ui.roster.RosterMotor
 import java.time.Instant
@@ -38,7 +39,8 @@ class ToDoApp : Application() {
                 })
             }
         }
-        viewModel { RosterMotor(get()) }
+        single { RosterReport(androidContext(), get(), get(named("appScope"))) }
+        viewModel { RosterMotor(get(), get()) }
         viewModel { (modelId: String) -> SingleModelMotor(get(), modelId) }
     }
 
