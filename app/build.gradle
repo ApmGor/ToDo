@@ -59,6 +59,9 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.4.0-alpha02"
     implementation "com.github.jknack:handlebars:4.1.2"
     implementation "androidx.preference:preference-ktx:1.1.1"
+    implementation "com.squareup.okhttp3:okhttp:5.0.0-alpha.2"
+    implementation "com.squareup.moshi:moshi:$moshi_version"
+    kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshi_version"
     testImplementation 'junit:junit:4.13.2'
     testImplementation "androidx.arch.core:core-testing:2.1.0"
     testImplementation "org.mockito:mockito-inline:2.28.2"
