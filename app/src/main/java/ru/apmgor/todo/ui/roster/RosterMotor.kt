@@ -16,6 +16,7 @@ data class RosterViewState(
 
 sealed class Nav {
     data class ViewReport(val doc: Uri) : Nav()
+    data class ShareReport(val doc: Uri) : Nav()
 }
 
 class RosterMotor(
@@ -56,6 +57,14 @@ class RosterMotor(
         viewModelScope.launch {
             _states.value?.let { report.generate(it.items, doc) }
             _navEvents.emit(Nav.ViewReport(doc))
+        }
+    }
+
+    fun shareReport() {
+        viewModelScope.launch {
+            val doc = report.getReportUri()
+            _states.value?.let { report.generate(it.items, doc) }
+            _navEvents.emit(Nav.ShareReport(doc))
         }
     }
 }
