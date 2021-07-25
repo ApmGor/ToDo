@@ -13,6 +13,7 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
+import ru.apmgor.todo.repo.PrefsRepository
 import ru.apmgor.todo.repo.ToDoDatabase
 import ru.apmgor.todo.repo.ToDoRemoteDataSource
 import ru.apmgor.todo.repo.ToDoRepository
@@ -45,7 +46,8 @@ class ToDoApp : Application() {
         single { RosterReport(androidContext(), get(), get(named("appScope"))) }
         single { OkHttpClient.Builder().build() }
         single { ToDoRemoteDataSource(get()) }
-        viewModel { RosterMotor(get(), get()) }
+        single { PrefsRepository(androidContext()) }
+        viewModel { RosterMotor(get(), get(), get()) }
         viewModel { (modelId: String) -> SingleModelMotor(get(), modelId) }
     }
 

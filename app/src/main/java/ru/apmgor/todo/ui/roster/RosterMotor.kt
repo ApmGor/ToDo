@@ -5,6 +5,7 @@ import androidx.lifecycle.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import ru.apmgor.todo.repo.FilterMode
+import ru.apmgor.todo.repo.PrefsRepository
 import ru.apmgor.todo.repo.ToDoModel
 import ru.apmgor.todo.repo.ToDoRepository
 import ru.apmgor.todo.report.RosterReport
@@ -21,7 +22,8 @@ sealed class Nav {
 
 class RosterMotor(
     private val repo: ToDoRepository,
-    private val report: RosterReport
+    private val report: RosterReport,
+    private val prefs: PrefsRepository
     ) : ViewModel() {
     private val _states = MediatorLiveData<RosterViewState>()
     val states: LiveData<RosterViewState> = _states
@@ -65,6 +67,12 @@ class RosterMotor(
             val doc = report.getReportUri()
             _states.value?.let { report.generate(it.items, doc) }
             _navEvents.emit(Nav.ShareReport(doc))
+        }
+    }
+
+    fun importItems() {
+        viewModelScope.launch {
+            repo.importItems(prefs.loadWebServiceUrl())
         }
     }
 }

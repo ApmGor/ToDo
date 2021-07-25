@@ -157,6 +157,10 @@ class RosterListFragment : Fragment() {
                 motor.shareReport()
                 true
             }
+            R.id.importItems -> {
+                motor.importItems()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
 
