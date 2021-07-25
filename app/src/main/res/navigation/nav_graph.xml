@@ -19,6 +19,9 @@
                 android:name="modelId"
                 android:defaultValue="@null" />
         </action>
+        <action
+            android:id="@+id/showError"
+            app:destination="@id/errorDialogFragment" />
     </fragment>
     <fragment
         android:id="@+id/displayFragment"
@@ -45,4 +48,18 @@
         android:name="ru.apmgor.todo.ui.prefs.PrefsFragment"
         android:label="@string/settings" />
     <action android:id="@+id/editPrefs" app:destination="@id/prefsFragment" />
+    <dialog
+        android:id="@+id/errorDialogFragment"
+        android:name="ru.apmgor.todo.ui.ErrorDialogFragment"
+        android:label="ErrorDialogFragment" >
+        <argument
+            android:name="title"
+            app:argType="string" />
+        <argument
+            android:name="message"
+            app:argType="string" />
+        <argument
+            android:name="scenario"
+            app:argType="ru.apmgor.todo.ui.ErrorScenario" />
+    </dialog>
 </navigation>

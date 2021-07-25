@@ -22,6 +22,8 @@ import ru.apmgor.todo.R
 import ru.apmgor.todo.databinding.TodoRosterBinding
 import ru.apmgor.todo.repo.FilterMode
 import ru.apmgor.todo.repo.ToDoModel
+import ru.apmgor.todo.ui.ErrorDialogFragment
+import ru.apmgor.todo.ui.ErrorScenario
 
 class RosterListFragment : Fragment() {
     private val motor: RosterMotor by viewModel()
@@ -106,7 +108,30 @@ class RosterListFragment : Fragment() {
                         is Nav.ShareReport -> shareReport(nav.doc)
                     }
                 }
-        }
+            }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            motor.errorEvents.flowWithLifecycle(
+                viewLifecycleOwner.lifecycle,
+                Lifecycle.State.STARTED)
+                .collect { error ->
+                    when (error) {
+                        ErrorScenario.Import -> handleImportError()
+                    }
+                }
+            }
+
+        findNavController()
+            .getBackStackEntry(R.id.rosterListFragment)
+            .savedStateHandle
+            .getLiveData<ErrorScenario>(ErrorDialogFragment.KEY_RETRY)
+            .observe(viewLifecycleOwner) { retryScenario ->
+                if (retryScenario != null) {
+                    when (retryScenario) {
+                        ErrorScenario.Import -> motor.importItems()
+                    }
+                }
+            }
     }
 
     private fun display(model: ToDoModel) {
@@ -198,6 +223,16 @@ class RosterListFragment : Fragment() {
                 .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 .setType("text/html")
                 .putExtra(Intent.EXTRA_STREAM, doc)
+        )
+    }
+
+    private fun handleImportError() {
+        findNavController().navigate(
+            RosterListFragmentDirections.showError(
+                getString(R.string.import_error_title),
+                getString(R.string.import_error_message),
+                ErrorScenario.Import
+            )
         )
     }
 }

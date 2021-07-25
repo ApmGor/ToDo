@@ -1,6 +1,7 @@
 package ru.apmgor.todo.ui.roster
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -9,6 +10,7 @@ import ru.apmgor.todo.repo.PrefsRepository
 import ru.apmgor.todo.repo.ToDoModel
 import ru.apmgor.todo.repo.ToDoRepository
 import ru.apmgor.todo.report.RosterReport
+import ru.apmgor.todo.ui.ErrorScenario
 
 data class RosterViewState(
     val items: List<ToDoModel> = listOf(),
@@ -31,6 +33,9 @@ class RosterMotor(
     private val _navEvents =
         MutableSharedFlow<Nav>()
     val navEvents = _navEvents.asSharedFlow()
+    private val _errorEvents =
+        MutableSharedFlow<ErrorScenario>()
+    val errorEvents = _errorEvents.asSharedFlow()
 
     init {
         load(FilterMode.ALL)
@@ -72,7 +77,12 @@ class RosterMotor(
 
     fun importItems() {
         viewModelScope.launch {
-            repo.importItems(prefs.loadWebServiceUrl())
+            try {
+                repo.importItems(prefs.loadWebServiceUrl())
+            } catch (ex: Exception) {
+                Log.e("ToDo", "Exception importing items", ex)
+                _errorEvents.emit(ErrorScenario.Import)
+            }
         }
     }
 }
